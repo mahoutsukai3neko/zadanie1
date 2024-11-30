@@ -1,11 +1,11 @@
 #Program serwera
-import socket
-import datetime
-import pytz
-import requests
+import socket  
+import datetime  
+import pytz  
+import requests  
 
-HOST = '0.0.0.0'  #Serwer nasłuchuje na wszystkich dostępnych interfejsach sieciowych
-PORT = 8080  #Port, na którym serwer będzie nasłuchiwał
+HOST = '0.0.0.0'  #Serwer nasłuchuje na wszystkich dostępnych interfejsach sieciowych  
+PORT = 8080  #Port, na którym serwer będzie nasłuchiwał  
 
 def log_server_start():
     #Funkcja logująca uruchomienie serwera

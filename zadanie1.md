@@ -59,67 +59,67 @@ def run_server():
         server_socket.listen()  #Serwer zaczyna nasłuchiwać na połączenia  
         print(f"Server is listening on {HOST}:{PORT}")  
         
-        while True:
-            client_socket, client_address = server_socket.accept()  #Akceptujemy nowe połączenie
-            with client_socket:
-                print(f"Connected by {client_address}")  #Informacja o nowym połączeniu
-                client_ip = client_address[0]  #Pobieramy adres IP klienta
-                client_time = get_client_time(client_ip)  #Pobieramy czas w strefie czasowej klienta
-                response = generate_html(client_ip, client_time)  #Generujemy stronę HTML z informacjami o kliencie
-                client_socket.sendall(f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{response}".encode())  #Wysyłamy stronę HTML do przeglądarki klienta
+        while True:  
+            client_socket, client_address = server_socket.accept()  #Akceptujemy nowe połączenie  
+            with client_socket:  
+                print(f"Connected by {client_address}")  #Informacja o nowym połączeniu  
+                client_ip = client_address[0]  #Pobieramy adres IP klienta  
+                client_time = get_client_time(client_ip)  #Pobieramy czas w strefie czasowej klienta  
+                response = generate_html(client_ip, client_time)  #Generujemy stronę HTML z informacjami o kliencie  
+                client_socket.sendall(f"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n{response}".encode())  #Wysyłamy stronę HTML do przeglądarki klienta  
 
-if __name__ == "__main__":
-    run_server()  #Uruchamiamy serwer
+if __name__ == "__main__":  
+    run_server()  #Uruchamiamy serwer  
 
-#Zawartość pliku Dockerfile
+#Zawartość pliku Dockerfile  
 
-#Użycie obrazu bazowego
-FROM python:3.12.7-slim AS base
+#Użycie obrazu bazowego  
+FROM python:3.12.7-slim AS base  
 
-#Informacja o autorze
-LABEL author="Kateryna Boiko"
+#Informacja o autorze  
+LABEL author="Kateryna Boiko"  
 
-#Ustawienie katalogu roboczego na /app
-WORKDIR /app
+#Ustawienie katalogu roboczego na /app  
+WORKDIR /app  
 
-#Instalacja wymaganych bibliotek (requests i pytz)
-RUN pip install --no-cache-dir requests pytz 
+#Instalacja wymaganych bibliotek (requests i pytz)  
+RUN pip install --no-cache-dir requests pytz   
 
-#Skopiowanie wszystkich plików z bieżącego katalogu
-COPY . .
+#Skopiowanie wszystkich plików z bieżącego katalogu  
+COPY . .  
 
-#Ustawienie portu, na którym serwer będzie nasłuchiwał
-EXPOSE 8080
+#Ustawienie portu, na którym serwer będzie nasłuchiwał  
+EXPOSE 8080  
 
-#Budowanie obrazu końcowego
-FROM base AS final
+#Budowanie obrazu końcowego    
+FROM base AS final  
 
-#Skopiowanie tylko niezbędnych plików do drugiego etapu budowania
-COPY main.py .
-COPY server_log.txt .
+#Skopiowanie tylko niezbędnych plików do drugiego etapu budowania  
+COPY main.py .  
+COPY server_log.txt .  
 
-#Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/ || exit 1
+#Healthcheck  
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \  
+  CMD curl -f http://localhost:8080/ || exit 1  
 
-#Polecenie uruchamiające serwer
-CMD ["python", "main.py"]
+#Polecenie uruchamiające serwer  
+CMD ["python", "main.py"]  
 
 
-Polecenia niezbędne do: 
-a. zbudowania opracowanego obrazu kontenera
+Polecenia niezbędne do:   
+a. zbudowania opracowanego obrazu kontenera  
 
-docker build -t docker.io/iol4/lab:server .
-docker push docker.io/iol4/lab:server
+docker build -t docker.io/iol4/lab:server .  
+docker push docker.io/iol4/lab:server  
 
-b. uruchomienia kontenera na podstawie zbudowanego obrazu
+b. uruchomienia kontenera na podstawie zbudowanego obrazu  
 
-docker run -p 8080:8080 --name server_container docker.io/iol4/lab:server
+docker run -p 8080:8080 --name server_container docker.io/iol4/lab:server  
 
-c. sposobu uzyskania informacji, które wygenerował serwer w trakcie uruchamiana kontenera 
+c. sposobu uzyskania informacji, które wygenerował serwer w trakcie uruchamiana kontenera   
 
-docker logs server_container
+docker logs server_container  
 
-d. sprawdzenia, ile warstw posiada zbudowany obraz
+d. sprawdzenia, ile warstw posiada zbudowany obraz  
 
-docker history docker.io/iol4/lab:server
+docker history docker.io/iol4/lab:server  
